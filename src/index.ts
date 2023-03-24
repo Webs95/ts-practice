@@ -1,18 +1,65 @@
-import image from './images/lazy.png';
+import "./style.scss";
 
-const createImage = (src: string) => new Promise<HTMLImageElement>((res, rej) => {
-  const img = new Image();
-  img.onload = () => res(img);
-  img.onerror = rej;
-  img.src = src;
-});
-
-async function render() {
-  const subHeader = document.createElement('h2');
-  subHeader.innerHTML = 'This elements was created by js';
-  const myImage = await createImage(image);
-  document.body.appendChild(subHeader);
-  document.body.appendChild(myImage);
+interface TodoInterface {
+  text: string;
+  date: Date;
+  done: boolean;
 }
 
-render();
+const input = document.querySelector(".todo__input") as HTMLInputElement;
+const createBtn = document.querySelector(".btn_create") as HTMLButtonElement;
+const todoList = document.querySelector(".todo__list") as HTMLOListElement;
+
+let todoData: TodoInterface[] = [];
+
+const createNoteFromStorage = (data: TodoInterface): void => {
+  const newElem = document.createElement("li");
+  newElem.classList.add("todo__item");
+
+  newElem.innerHTML = `<span class="todo__text ${
+    data.done ? "task_complete" : "task_not-complete"
+  }">${data.text}</span><button class="btn btn_remove">❌</button>`;
+
+  todoList.appendChild(newElem);
+};
+
+const createNote = (text: string): void => {
+  const newElem = document.createElement("li");
+
+  newElem.classList.add("todo__item");
+  newElem.innerHTML = `<span class="todo__text">${text}</span><button class="btn btn_remove">❌</button>`;
+
+  todoList.appendChild(newElem);
+};
+
+const initProject = (): void => {
+  const localStorageData = localStorage.getItem("todos");
+
+  if (localStorageData) {
+    const todoParseData = JSON.parse(localStorageData);
+    todoData = todoParseData;
+    todoParseData.forEach((task: TodoInterface) => {
+      createNoteFromStorage(task);
+    });
+  }
+};
+
+input.addEventListener("keyup", (e: KeyboardEvent) => {
+  const target: HTMLInputElement = e.target as HTMLInputElement;
+  const data: TodoInterface = {
+    text: target.value,
+    date: new Date(),
+    done: false,
+  };
+
+  if (e.key === "Enter") {
+    todoData.push(data);
+    createNote(target.value);
+    target.value = "";
+    console.log(todoData);
+    localStorage.setItem("todos", JSON.stringify(todoData));
+    console.log("storage", localStorage.getItem("todos"));
+  }
+});
+
+initProject();
