@@ -1,0 +1,45 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.todo {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  &__list {}
+
+  &__item {
+    gap: 4px;
+  }
+
+  &__container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__input {
+    display: flex;
+    height: 25px;
+  }
+}
+
+.btn {
+  padding: 0 3px;
+  display: inline-flex;
+  height: 25px;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.task {
+  &_complete {
+    text-decoration: line-through;
+  }
+}
