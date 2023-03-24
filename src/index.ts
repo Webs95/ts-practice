@@ -2,7 +2,7 @@ import "./style.scss";
 
 interface TodoInterface {
   text: string;
-  date: Date;
+  createDate: Date;
   done: boolean;
 }
 
@@ -48,14 +48,31 @@ input.addEventListener("keyup", (e: KeyboardEvent) => {
   const target: HTMLInputElement = e.target as HTMLInputElement;
   const data: TodoInterface = {
     text: target.value,
-    date: new Date(),
+    createDate: new Date(),
     done: false,
   };
 
-  if (e.key === "Enter") {
+  if (e.key === "Enter" && target.value) {
     todoData.push(data);
     createNote(target.value);
     target.value = "";
+    console.log(todoData);
+    localStorage.setItem("todos", JSON.stringify(todoData));
+    console.log("storage", localStorage.getItem("todos"));
+  }
+});
+
+createBtn.addEventListener("click", () => {
+  const data: TodoInterface = {
+    text: input.value,
+    createDate: new Date(),
+    done: false,
+  };
+
+  if (input.value) {
+    todoData.push(data);
+    createNote(input.value);
+    input.value = "";
     console.log(todoData);
     localStorage.setItem("todos", JSON.stringify(todoData));
     console.log("storage", localStorage.getItem("todos"));
