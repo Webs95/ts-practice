@@ -1,6 +1,8 @@
 import "./style.scss";
+import "animate.css";
 
 interface TodoInterface {
+  id: string;
   text: string;
   createDate: Date;
   done: boolean;
@@ -12,13 +14,23 @@ const todoList = document.querySelector(".todo__list") as HTMLOListElement;
 
 let todoData: TodoInterface[] = [];
 
+const generateUniqueId = (): string => {
+  const timestamp: string = Date.now().toString(36);
+  const randomNum: string = Math.random().toString(36).substr(2, 5);
+  const uniqueId: string = `${timestamp}-${randomNum}`;
+
+  return uniqueId;
+};
+
+generateUniqueId();
+
 const createNoteFromStorage = (data: TodoInterface): void => {
   const newElem = document.createElement("li");
   newElem.classList.add("todo__item");
 
   newElem.innerHTML = `<span class="todo__text ${
     data.done ? "task_complete" : "task_not-complete"
-  }">${data.text}</span><button class="btn btn_remove">❌</button>`;
+  }">${data.text}</span><button class="btn btn_remove">x</button>`;
 
   todoList.appendChild(newElem);
 };
@@ -27,7 +39,7 @@ const createNote = (text: string): void => {
   const newElem = document.createElement("li");
 
   newElem.classList.add("todo__item");
-  newElem.innerHTML = `<span class="todo__text">${text}</span><button class="btn btn_remove">❌</button>`;
+  newElem.innerHTML = `<span class="todo__text">${text}</span><button class="btn btn_remove">x</button>`;
 
   todoList.appendChild(newElem);
 };
@@ -47,6 +59,7 @@ const initProject = (): void => {
 input.addEventListener("keyup", (e: KeyboardEvent) => {
   const target: HTMLInputElement = e.target as HTMLInputElement;
   const data: TodoInterface = {
+    id: generateUniqueId(),
     text: target.value,
     createDate: new Date(),
     done: false,
@@ -56,7 +69,7 @@ input.addEventListener("keyup", (e: KeyboardEvent) => {
     todoData.push(data);
     createNote(target.value);
     target.value = "";
-    console.log(todoData);
+    console.log("todoData", todoData);
     localStorage.setItem("todos", JSON.stringify(todoData));
     console.log("storage", localStorage.getItem("todos"));
   }
@@ -64,6 +77,7 @@ input.addEventListener("keyup", (e: KeyboardEvent) => {
 
 createBtn.addEventListener("click", () => {
   const data: TodoInterface = {
+    id: generateUniqueId(),
     text: input.value,
     createDate: new Date(),
     done: false,
