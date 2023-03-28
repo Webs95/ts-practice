@@ -10,9 +10,10 @@ interface TodoInterface {
 
 const input = document.querySelector(".todo__input") as HTMLInputElement;
 const createBtn = document.querySelector(".btn_create") as HTMLButtonElement;
-const todoList = document.querySelector(".todo__list") as HTMLOListElement;
+const todoList = document.getElementById("todo") as HTMLOListElement;
 
 let todoData: TodoInterface[] = [];
+let removingItemId: string = "";
 
 const generateUniqueId = (): string => {
   const timestamp: string = Date.now().toString(36);
@@ -21,8 +22,6 @@ const generateUniqueId = (): string => {
 
   return uniqueId;
 };
-
-generateUniqueId();
 
 const createNoteFromStorage = (data: TodoInterface): void => {
   const newElem = document.createElement("li");
@@ -37,11 +36,18 @@ const createNoteFromStorage = (data: TodoInterface): void => {
 
 const createNote = (text: string): void => {
   const newElem = document.createElement("li");
-
   newElem.classList.add("todo__item");
+
   newElem.innerHTML = `<span class="todo__text">${text}</span><button class="btn btn_remove">x</button>`;
 
   todoList.appendChild(newElem);
+};
+
+const deleteItem = (itemId: string) => {
+  todoData = todoData.filter((item) => item.id !== itemId);
+  todoList.innerHTML = "";
+  localStorage.setItem("todos", JSON.stringify(todoData));
+  initProject();
 };
 
 const initProject = (): void => {
@@ -69,9 +75,7 @@ input.addEventListener("keyup", (e: KeyboardEvent) => {
     todoData.push(data);
     createNote(target.value);
     target.value = "";
-    console.log("todoData", todoData);
     localStorage.setItem("todos", JSON.stringify(todoData));
-    console.log("storage", localStorage.getItem("todos"));
   }
 });
 
@@ -87,9 +91,18 @@ createBtn.addEventListener("click", () => {
     todoData.push(data);
     createNote(input.value);
     input.value = "";
-    console.log(todoData);
     localStorage.setItem("todos", JSON.stringify(todoData));
-    console.log("storage", localStorage.getItem("todos"));
+  }
+});
+
+todoList.addEventListener("click", (e) => {
+  const target = e.target as HTMLElement;
+  for (let i = 0; i < todoList.children.length; i++) {
+    const item = todoList.children[i];
+    if (item.contains(target)) {
+      removingItemId = todoData[i].id;
+      deleteItem(removingItemId);
+    }
   }
 });
 
