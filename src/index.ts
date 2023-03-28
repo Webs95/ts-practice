@@ -23,24 +23,24 @@ const generateUniqueId = (): string => {
   return uniqueId;
 };
 
-const createNoteFromStorage = (data: TodoInterface): void => {
-  const newElem = document.createElement("li");
-  newElem.classList.add("todo__item");
+const createNote = (data: string | TodoInterface): void => {
+  if (typeof data === "string") {
+    const newElem = document.createElement("li");
+    newElem.classList.add("todo__item");
 
-  newElem.innerHTML = `<span class="todo__text ${
-    data.done ? "task_complete" : "task_not-complete"
-  }">${data.text}</span><button class="btn btn_remove">x</button>`;
+    newElem.innerHTML = `<span class="todo__text">${data}</span><button class="btn btn_remove">x</button>`;
 
-  todoList.appendChild(newElem);
-};
+    todoList.appendChild(newElem);
+  } else if (typeof data === "object") {
+    const newElem = document.createElement("li");
+    newElem.classList.add("todo__item");
 
-const createNote = (text: string): void => {
-  const newElem = document.createElement("li");
-  newElem.classList.add("todo__item");
+    newElem.innerHTML = `<span class="todo__text ${
+      data.done ? "task_complete" : "task_not-complete"
+    }">${data.text}</span><button class="btn btn_remove">x</button>`;
 
-  newElem.innerHTML = `<span class="todo__text">${text}</span><button class="btn btn_remove">x</button>`;
-
-  todoList.appendChild(newElem);
+    todoList.appendChild(newElem);
+  }
 };
 
 const deleteItem = (itemId: string) => {
@@ -57,7 +57,7 @@ const initProject = (): void => {
     const todoParseData = JSON.parse(localStorageData);
     todoData = todoParseData;
     todoParseData.forEach((task: TodoInterface) => {
-      createNoteFromStorage(task);
+      createNote(task);
     });
   }
 };
