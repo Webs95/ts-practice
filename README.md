@@ -1,3 +1,3 @@
 # ts-practice
-Simple todo list.
+Simple todo list.  
 Demo [here](https://webs95.github.io/ts-practice/)
